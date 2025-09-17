@@ -1,0 +1,12 @@
+/* Custom styles for pet inventory */
+.dog-placeholder {
+    width: 100px;
+    height: 100px;
+    background: #ecf0f1;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: #34495e;
+}

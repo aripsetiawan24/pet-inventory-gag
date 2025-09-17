@@ -1,0 +1,460 @@
+{% extends "base.html" %}
+
+{% block title %}Pet Inventory - Stock Display{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: #171825 !important;
+    }
+
+    .inventory-card {
+        background: transparent;
+        border: none;
+        padding: 15px;
+        margin: 10px auto;
+        text-align: center;
+        max-width: 280px;
+        width: 100%;
+    }
+
+    .pet-container {
+        background: #2a2a2a;
+        border-radius: 20px;
+        width: 180px;
+        height: 180px;
+        margin: 0 auto 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #333;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .pet-image {
+        width: 120px;
+        height: 120px;
+        object-fit: contain;
+    }
+
+    .product-title {
+        color: #ffffff;
+        font-size: 2.2rem;
+        font-weight: 600;
+        margin-bottom: 25px;
+        letter-spacing: 1px;
+    }
+
+    .product-info {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .pet-age-badge {
+        background: #4a90e2;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        min-width: 140px;
+        box-shadow: 0 3px 10px rgba(74, 144, 226, 0.3);
+    }
+
+    .qty-badge {
+        color: white;
+        padding: 15px 20px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        min-width: 100px;
+        transition: all 0.3s ease;
+    }
+    
+    .qty-badge.qty-zero {
+        background: #dc3545;
+        box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3);
+    }
+    
+    .qty-badge.qty-zero:hover {
+        background: #c82333;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+    }
+    
+    .qty-badge.qty-low {
+        background: #ffc107;
+        box-shadow: 0 3px 10px rgba(255, 193, 7, 0.3);
+        color: #212529;
+    }
+    
+    .qty-badge.qty-low:hover {
+        background: #e0a800;
+        box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+    }
+    
+    .qty-badge.qty-good {
+        background: #28a745;
+        box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+    }
+    
+    .qty-badge.qty-good:hover {
+        background: #218838;
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+    }
+    
+    .qty-badge.qty-default {
+        background: #6c7b7f;
+        box-shadow: 0 3px 10px rgba(108, 123, 127, 0.3);
+    }
+    
+    .qty-badge.qty-default:hover {
+        background: #5a6268;
+        box-shadow: 0 4px 15px rgba(108, 123, 127, 0.4);
+    }
+
+    .container-fluid {
+        padding-top: 30px;
+    }
+
+    .page-title {
+        color: #ffffff;
+        font-size: 2.5rem;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 40px;
+        letter-spacing: 1px;
+    }
+
+    .trade-link-btn {
+        background: linear-gradient(45deg, #00c851 0%, #007bff 100%);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 15px 30px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 200, 81, 0.3);
+        font-size: 1.1rem;
+    }
+
+    .trade-link-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 200, 81, 0.4);
+        color: white;
+        text-decoration: none;
+        background: linear-gradient(45deg, #00a844 0%, #0056b3 100%);
+    }
+
+    /* Enhanced Responsive Design */
+    @media (max-width: 1200px) {
+        .inventory-card {
+            max-width: 260px;
+            padding: 12px;
+        }
+        
+        .pet-container {
+            width: 160px;
+            height: 160px;
+        }
+
+        .pet-image {
+            width: 110px;
+            height: 110px;
+        }
+
+        .product-title {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .container-fluid {
+            padding-top: 25px;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .page-title {
+            font-size: 2.2rem;
+            margin-bottom: 35px;
+        }
+
+        .inventory-card {
+            max-width: 240px;
+            padding: 10px;
+            margin: 8px auto;
+        }
+        
+        .pet-container {
+            width: 150px;
+            height: 150px;
+        }
+
+        .pet-image {
+            width: 100px;
+            height: 100px;
+        }
+
+        .product-title {
+            font-size: 1.9rem;
+            margin-bottom: 20px;
+        }
+
+        .pet-age-badge,
+        .qty-badge {
+            padding: 13px 22px;
+            font-size: 1.05rem;
+            min-width: 130px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .container-fluid {
+            padding-top: 20px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+
+        .inventory-card {
+            max-width: 220px;
+            padding: 8px;
+            margin: 6px auto;
+        }
+
+        .pet-container {
+            width: 140px;
+            height: 140px;
+        }
+
+        .pet-image {
+            width: 95px;
+            height: 95px;
+        }
+
+        .product-title {
+            font-size: 1.7rem;
+            margin-bottom: 18px;
+        }
+
+        .pet-age-badge,
+        .qty-badge {
+            padding: 12px 20px;
+            font-size: 1rem;
+            min-width: 120px;
+        }
+
+        .trade-link-btn {
+            padding: 13px 26px;
+            font-size: 1.05rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .container-fluid {
+            padding-top: 15px;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+        }
+
+        .inventory-card {
+            max-width: 200px;
+            padding: 6px;
+            margin: 4px auto;
+        }
+
+        .pet-container {
+            width: 130px;
+            height: 130px;
+        }
+
+        .pet-image {
+            width: 85px;
+            height: 85px;
+        }
+
+        .product-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .product-info {
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .pet-age-badge,
+        .qty-badge {
+            padding: 10px 18px;
+            font-size: 0.95rem;
+            min-width: 110px;
+        }
+
+        .trade-link-btn {
+            padding: 12px 24px;
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .container-fluid {
+            padding-top: 12px;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        .page-title {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+        }
+
+        .inventory-card {
+            max-width: 180px;
+            padding: 5px;
+            margin: 3px auto;
+        }
+
+        .pet-container {
+            width: 120px;
+            height: 120px;
+        }
+
+        .pet-image {
+            width: 75px;
+            height: 75px;
+        }
+
+        .product-title {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+        }
+
+        .product-info {
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .pet-age-badge,
+        .qty-badge {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            min-width: 100px;
+        }
+
+        .trade-link-btn {
+            padding: 10px 20px;
+            font-size: 0.95rem;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .page-title {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+
+        .inventory-card {
+            max-width: 160px;
+            padding: 4px;
+        }
+
+        .pet-container {
+            width: 110px;
+            height: 110px;
+        }
+
+        .pet-image {
+            width: 70px;
+            height: 70px;
+        }
+
+        .product-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .pet-age-badge,
+        .qty-badge {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            min-width: 90px;
+        }
+
+        .trade-link-btn {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <h1 class="page-title">
+        <i class="fas fa-paw me-3"></i>Current Available Stock
+    </h1>
+
+    <!-- Inventory Section -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8">
+            <div class="row justify-content-center align-items-stretch">
+                {% for product_id, product in inventory.items() %}
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-8 col-10 d-flex justify-content-center">
+                    <div class="inventory-card">
+                        <!-- Pet Image Container -->
+                        <div class="pet-container">
+                            <img src="{{ url_for('static', filename='images/dog.png') }}" alt="Dog" class="pet-image">
+                        </div>
+
+                        <!-- Product Title -->
+                        <h2 class="product-title">Dog</h2>
+
+                        <!-- Product Info -->
+                        <div class="product-info">
+                            <div class="pet-age-badge">
+                                {{ product.name }}
+                            </div>
+                            <div class="qty-badge 
+                                {% if product.quantity == 0 %}qty-zero
+                                {% elif product.quantity <= 5 %}qty-low
+                                {% elif product.quantity >= 6 %}qty-good
+                                {% else %}qty-default{% endif %}">
+                                Qty: {{ product.quantity }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Trade Link Button -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-12 col-lg-10">
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    <a href="{{ url_for('trade') }}" class="trade-link-btn">
+                        <i class="fas fa-exchange-alt"></i>
+                        View Trade Offers
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

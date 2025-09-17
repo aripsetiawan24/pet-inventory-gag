@@ -1,0 +1,547 @@
+{% extends "base.html" %}
+
+{% block title %}Trade Offers - Pet Inventory{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: #171825 !important;
+    }
+
+    .container-fluid {
+        padding-top: 30px;
+    }
+
+    .page-title {
+        color: #ffffff;
+        font-size: 2.5rem;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 40px;
+        letter-spacing: 1px;
+    }
+
+    /* Trade Offer Styles */
+    .trade-section {
+        background: #1e1e2e;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border: 1px solid #333;
+    }
+
+    .trade-header {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #fff;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        background: #4a90e2;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+    }
+
+    .trade-content {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .trade-side {
+        flex: 1;
+        min-width: 250px;
+    }
+
+    .trade-title {
+        color: #9b59b6;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        justify-content: flex-start;
+    }
+
+    .trade-side:last-child .trade-title {
+        justify-content: flex-end;
+    }
+
+    .trade-items {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .trade-items.offering {
+        justify-content: flex-start;
+    }
+
+    .trade-items.wants {
+        justify-content: flex-end;
+    }
+
+    .trade-item {
+        background: #2a2a2a;
+        border-radius: 12px;
+        padding: 15px;
+        text-align: center;
+        min-width: 120px;
+        border: 2px solid #333;
+        transition: transform 0.2s ease;
+    }
+
+    .trade-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .trade-item-image {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 10px;
+        background: #333;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .trade-item-image img {
+        width: 45px;
+        height: 45px;
+        object-fit: contain;
+    }
+
+    .trade-item-name {
+        color: #fff;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .trade-item-details {
+        display: flex;
+        gap: 5px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .trade-item-badge {
+        background: #4a90e2;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .trade-item-qty {
+        background: #6c7b7f;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    /* Enhanced Responsive Design */
+    @media (max-width: 1200px) {
+        .trade-content {
+            gap: 15px;
+        }
+
+        .trade-side {
+            min-width: 200px;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .page-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+
+        .trade-section {
+            padding: 20px;
+        }
+
+        .trade-content {
+            gap: 20px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .page-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+        }
+
+        .trade-content {
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .trade-header {
+            justify-content: center;
+        }
+
+        .trade-side {
+            min-width: 100%;
+        }
+
+        .trade-title {
+            justify-content: center !important;
+            font-size: 1rem;
+        }
+
+        .trade-side:last-child .trade-title {
+            justify-content: center !important;
+        }
+
+        .trade-items,
+        .trade-items.offering,
+        .trade-items.wants {
+            justify-content: center !important;
+            gap: 12px;
+        }
+
+        .trade-section {
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .container-fluid {
+            padding-top: 20px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .trade-section {
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+        .trade-item {
+            min-width: 100px;
+            padding: 12px;
+        }
+
+        .trade-item-image {
+            width: 50px;
+            height: 50px;
+        }
+
+        .trade-item-image img {
+            width: 35px;
+            height: 35px;
+        }
+
+        .trade-item-name {
+            font-size: 0.8rem;
+        }
+
+        .trade-items {
+            gap: 8px;
+        }
+
+        .user-info {
+            flex-direction: column;
+            text-align: center;
+            gap: 5px;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .trade-items {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .trade-item {
+            width: 100%;
+            max-width: 200px;
+        }
+    }
+
+    /* Back to inventory button */
+    .back-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #4a90e2;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 15px 20px;
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+
+    .back-btn:hover {
+        background: #357abd;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+        .back-btn {
+            bottom: 15px;
+            right: 15px;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <h1 class="page-title">
+        <i class="fas fa-exchange-alt me-3"></i>Trade Offers
+    </h1>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+            <!-- Trade Offer 1: 2 Pet Age 60 = 4 Ostrich or 4 Peacock -->
+            <div class="trade-section">
+                <div class="trade-header">
+                    <div class="user-info">
+                        <div class="user-avatar">{{ username[0].upper() }}</div>
+                        <div>
+                            <div style="color: #4a90e2; font-weight: 600;">{{ username }}</div>
+                            <div style="color: #888; font-size: 0.9rem;">1 minutes ago</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trade-content">
+                    <div class="trade-side">
+                        <div class="trade-title">
+                            <i class="fas fa-star" style="color: #9b59b6;"></i>
+                            Offering (1)
+                        </div>
+                        <div class="trade-items offering">
+                            <div class="trade-item">
+                                <div class="trade-item-image">
+                                    <img src="{{ url_for('static', filename='images/dog.png') }}" alt="Dog">
+                                </div>
+                                <div class="trade-item-name">Dog</div>
+                                <div class="trade-item-details">
+                                    <div class="trade-item-badge">Pet Age: 60</div>
+                                    <div class="trade-item-qty">Qty: 2</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="trade-side">
+                        <div class="trade-title">
+                            <i class="fas fa-star" style="color: #9b59b6;"></i>
+                            Wants (3)
+                        </div>
+                        <div class="trade-items wants">
+                            <div class="trade-item">
+                                <div class="trade-item-image">
+                                    <img src="{{ url_for('static', filename='images/ostrich.png') }}" alt="Ostrich">
+                                </div>
+                                <div class="trade-item-name">Ostrich</div>
+                                <div class="trade-item-details">
+                                    <div class="trade-item-qty">Qty: 4</div>
+                                </div>
+                            </div>
+                            <div class="trade-item">
+                                <div class="trade-item-image">
+                                    <img src="{{ url_for('static', filename='images/or.png') }}" alt="Or">
+                                </div>
+                                <div class="trade-item-name">Or</div>
+                            </div>
+                            <div class="trade-item">
+                                <div class="trade-item-image">
+                                    <img src="{{ url_for('static', filename='images/peacock.png') }}" alt="Peacock">
+                                </div>
+                                <div class="trade-item-name">Peacock</div>
+                                <div class="trade-item-details">
+                                    <div class="trade-item-qty">Qty: 4</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trade Offer 2: 2 Pet Age 70 = 5 Ostrich or 5 Peacock -->
+            <div class="trade-section">
+                <div class="trade-header">
+                    <div class="user-info">
+                        <div class="user-avatar">{{ username[0].upper() }}</div>
+                        <div>
+                            <div style="color: #4a90e2; font-weight: 600;">{{ username }}</div>
+                            <div style="color: #888; font-size: 0.9rem;">2 minutes ago</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trade-content">
+                    <div class="trade-side">
+                        <div class="trade-title">
+                            <i class="fas fa-star" style="color: #9b59b6;"></i>
+                            Offering (1)
+                        </div>
+                        <div class="trade-items offering">
+                            <div class="trade-item">
+                                <div class="trade-item-image">
+                                    <img src="{{ url_for('static', filename='images/dog.png') }}" alt="Dog">
+                                </div>
+                                <div class="trade-item-name">Dog</div>
+                                <div class="trade-item-details">
+                                    <div class="trade-item-badge">Pet Age: 70</div>
+                                    <div class="trade-item-qty">Qty: 2</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="trade-side">
+                        <div class="trade-title">
+                            <i class="fas fa-star" style="color: #9b59b6;"></i>
+                            Wants (3)
+                        </div>
+                        <div class="trade-items wants">
+                            <div class="trade-item">
+                                <div class="trade-item-image">
+                                    <img src="{{ url_for('static', filename='images/ostrich.png') }}" alt="Ostrich">
+                                </div>
+                                <div class="trade-item-name">Ostrich</div>
+                                <div class="trade-item-details">
+                                    <div class="trade-item-qty">Qty: 5</div>
+                                </div>
+                            </div>
+                            <div class="trade-item">
+                                <div class="trade-item-image">
+                                    <img src="{{ url_for('static', filename='images/or.png') }}" alt="Or">
+                                </div>
+                                <div class="trade-item-name">Or</div>
+                            </div>
+                            <div class="trade-item">
+                                <div class="trade-item-image">
+                                    <img src="{{ url_for('static', filename='images/peacock.png') }}" alt="Peacock">
+                                </div>
+                                <div class="trade-item-name">Peacock</div>
+                                <div class="trade-item-details">
+                                    <div class="trade-item-qty">Qty: 5</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trade Offer 3: 1 Pet Age 75 = 4 Ostrich or 4 Peacock -->
+            <div class="trade-section">
+                <div class="trade-header">
+                    <div class="user-info">
+                        <div class="user-avatar">{{ username[0].upper() }}</div>
+                        <div>
+                            <div style="color: #4a90e2; font-weight: 600;">{{ username }}</div>
+                            <div style="color: #888; font-size: 0.9rem;">3 minutes ago</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trade-content">
+                    <div class="trade-side">
+                        <div class="trade-title">
+                            <i class="fas fa-star" style="color: #9b59b6;"></i>
+                            Offering (1)
+                        </div>
+                        <div class="trade-items offering">
+                            <div class="trade-item">
+                                <div class="trade-item-image">
+                                    <img src="{{ url_for('static', filename='images/dog.png') }}" alt="Dog">
+                                </div>
+                                <div class="trade-item-name">Dog</div>
+                                <div class="trade-item-details">
+                                    <div class="trade-item-badge">Pet Age: 75</div>
+                                    <div class="trade-item-qty">Qty: 1</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="trade-side">
+                        <div class="trade-title">
+                            <i class="fas fa-star" style="color: #9b59b6;"></i>
+                            Wants (3)
+                        </div>
+                        <div class="trade-items wants">
+                            <div class="trade-item">
+                                <div class="trade-item-image">
+                                    <img src="{{ url_for('static', filename='images/ostrich.png') }}" alt="Ostrich">
+                                </div>
+                                <div class="trade-item-name">Ostrich</div>
+                                <div class="trade-item-details">
+                                    <div class="trade-item-qty">Qty: 4</div>
+                                </div>
+                            </div>
+                            <div class="trade-item">
+                                <div class="trade-item-image">
+                                    <img src="{{ url_for('static', filename='images/or.png') }}" alt="Or">
+                                </div>
+                                <div class="trade-item-name">Or</div>
+                            </div>
+                            <div class="trade-item">
+                                <div class="trade-item-image">
+                                    <img src="{{ url_for('static', filename='images/peacock.png') }}" alt="Peacock">
+                                </div>
+                                <div class="trade-item-name">Peacock</div>
+                                <div class="trade-item-details">
+                                    <div class="trade-item-qty">Qty: 4</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Back to Inventory Button -->
+<a href="{{ url_for('index') }}" class="back-btn">
+    <i class="fas fa-arrow-left me-2"></i>Back to Inventory
+</a>
+{% endblock %}

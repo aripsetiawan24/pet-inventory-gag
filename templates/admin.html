@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel - Pet Inventory{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: #171825 !important;
+    }
+
+    .pet-container-admin {
+        background: #2a2a2a;
+        border-radius: 15px;
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #333;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        transition: transform 0.2s ease;
+    }
+
+    .pet-container-admin:hover {
+        transform: scale(1.05);
+    }
+
+    .pet-image-admin {
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+    }
+
+    .card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+    }
+
+    .stock-card {
+        transition: all 0.3s ease;
+    }
+
+    .stock-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .badge {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+        border-radius: 15px;
+    }
+
+    .text-primary {
+        color: #4a90e2 !important;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .pet-container-admin {
+            width: 70px;
+            height: 70px;
+        }
+
+        .pet-image-admin {
+            width: 45px;
+            height: 45px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .pet-container-admin {
+            width: 60px;
+            height: 60px;
+        }
+
+        .pet-image-admin {
+            width: 40px;
+            height: 40px;
+        }
+    }
+</style>
+<div class="row justify-content-center">
+    <div class="col-12">
+        <div class="text-center mb-5">
+            <h1 class="text-white mb-3">
+                <i class="fas fa-cog me-3"></i>Admin Panel
+            </h1>
+            <p class="text-white-50">Kelola Stock Inventory Pet Age</p>
+        </div>
+    </div>
+</div>
+
+<!-- Reset Stock Section -->
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white text-center">
+                <h4 class="mb-0">
+                    <i class="fas fa-redo me-2"></i>Reset Semua Stock
+                </h4>
+            </div>
+            <div class="card-body text-center">
+                <p class="text-muted mb-4">Reset semua stock ke nilai default (Pet Age 60: 0, Pet Age 70: 0, Pet Age
+                    75: 0)</p>
+                <form method="POST" action="{{ url_for('reset_stock') }}"
+                    onsubmit="return confirm('Apakah Anda yakin ingin mereset semua stock?')">
+                    <button type="submit" class="btn btn-danger btn-lg">
+                        <i class="fas fa-redo me-2"></i>Reset Stock
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Stock Section -->
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white text-center">
+                <h4 class="mb-0">
+                    <i class="fas fa-edit me-2"></i>Update Stock
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('update_stock') }}">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label for="product_id" class="form-label fw-bold">Pilih Produk:</label>
+                            <select class="form-select form-select-lg" id="product_id" name="product_id" required>
+                                <option value="">-- Pilih Produk --</option>
+                                {% for product_id, product in inventory.items() %}
+                                <option value="{{ product_id }}">{{ product.name }} (Stock: {{ product.quantity }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="action" class="form-label fw-bold">Aksi:</label>
+                            <select class="form-select form-select-lg" id="action" name="action" required>
+                                <option value="">-- Pilih Aksi --</option>
+                                <option value="add">Tambah Stock</option>
+                                <option value="subtract">Kurangi Stock</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="quantity" class="form-label fw-bold">Jumlah:</label>
+                            <select class="form-select form-select-lg" id="quantity" name="quantity" required>
+                                <option value="">-- Pilih Jumlah --</option>
+                                {% for i in range(1, 11) %}
+                                <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-success btn-lg w-100">
+                                <i class="fas fa-save me-2"></i>Update Stock
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Current Stock Display -->
+<div class="row justify-content-center mt-5">
+    <div class="col-lg-10">
+        <div class="card">
+            <div class="card-header bg-info text-white text-center">
+                <h4 class="mb-0">
+                    <i class="fas fa-list me-2"></i>Stock Saat Ini
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for product_id, product in inventory.items() %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 stock-card">
+                            <div class="card-body text-center">
+                                <div class="pet-container-admin mb-3 mx-auto">
+                                    <img src="{{ url_for('static', filename='images/dog.png') }}" alt="Dog"
+                                        class="pet-image-admin">
+                                </div>
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <h3 class="text-primary mb-3">{{ product.quantity }}</h3>
+                                {% if product.quantity == 0 %}
+                                <span class="badge bg-danger">Stock Habis</span>
+                                {% elif product.quantity <= 5 %} <span class="badge bg-warning text-dark">Stock
+                                    Terbatas</span>
+                                    {% elif product.quantity >= 6 %}
+                                    <span class="badge bg-success">Stock Aman</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Unknown</span>
+                                    {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center mt-4 mb-5">
+    <div class="col-auto">
+        <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">
+            <i class="fas fa-home me-2"></i>Kembali ke Home
+        </a>
+    </div>
+</div>
+{% endblock %}

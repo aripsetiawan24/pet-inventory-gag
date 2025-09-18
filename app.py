@@ -3,7 +3,7 @@ import json
 import os
 
 app = Flask(__name__)
-
+app.secret_key = 'jawir'
 # Admin credentials
 ADMIN_USERNAME = 'jawir'
 ADMIN_PASSWORD = 'jawirlu'
